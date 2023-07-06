@@ -1,21 +1,14 @@
-﻿using Aki.Reflection.Patching;
-using CombatStances;
-using Comfort.Common;
-using EFT;
-using EFT.Animations;
-using EFT.InventoryLogic;
-using HarmonyLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
-
-
+using Aki.Reflection.Patching;
+using EFT;
+using EFT.InventoryLogic;
+using HarmonyLib;
 
 namespace CombatStances
 {
-
     public static class AimController
     {
         private static bool hasSetActiveAimADS = false;
@@ -33,8 +26,7 @@ namespace CombatStances
             {
                 bool flag = false;
                 IEnumerable<ProtrudableComponent> enumerable = Enumerable.Empty<ProtrudableComponent>();
-                FoldableComponent foldableComponent;
-                if (GClass2428.CanFold(weapon, out foldableComponent))
+                if (GClass2428.CanFold(weapon, out FoldableComponent foldableComponent))
                 {
                     if (foldableComponent.FoldedSlot == null)
                     {
@@ -42,12 +34,12 @@ namespace CombatStances
                     }
                     else if (foldableComponent.FoldedSlot.ContainedItem != null)
                     {
-                        enumerable = Enumerable.ToArray<ProtrudableComponent>(foldableComponent.FoldedSlot.ContainedItem.GetItemComponentsInChildren<ProtrudableComponent>(true));
+                        enumerable = Enumerable.ToArray(foldableComponent.FoldedSlot.ContainedItem.GetItemComponentsInChildren<ProtrudableComponent>(true));
                         bool flag2 = flag;
                         bool flag3;
                         if (!foldableComponent.Folded)
                         {
-                            flag3 = Enumerable.Any<ProtrudableComponent>(enumerable, new Func<ProtrudableComponent, bool>(checkProtruding));
+                            flag3 = Enumerable.Any(enumerable, new Func<ProtrudableComponent, bool>(checkProtruding));
                         }
                         else
                         {
@@ -56,8 +48,8 @@ namespace CombatStances
                         flag = (flag2 || flag3);
                     }
                 }
-                IEnumerable<ProtrudableComponent> enumerable2 = Enumerable.Except<ProtrudableComponent>(weapon.GetItemComponentsInChildren<ProtrudableComponent>(true), enumerable);
-                flag |= Enumerable.Any<ProtrudableComponent>(enumerable2, new Func<ProtrudableComponent, bool>(checkProtruding));
+                IEnumerable<ProtrudableComponent> enumerable2 = Enumerable.Except(weapon.GetItemComponentsInChildren<ProtrudableComponent>(true), enumerable);
+                flag |= Enumerable.Any(enumerable2, new Func<ProtrudableComponent, bool>(checkProtruding));
                 return !flag;
             }
 
@@ -69,11 +61,11 @@ namespace CombatStances
             return false;
         }
 
-        public static void ADSCheck(Player player, EFT.Player.FirearmController fc)
+        public static void ADSCheck(Player player, Player.FirearmController fc)
         {
             if (!player.IsAI && fc.Item != null)
             {
-                bool isAiming = (bool)AccessTools.Field(typeof(EFT.Player.FirearmController), "_isAiming").GetValue(fc);
+                bool isAiming = (bool)AccessTools.Field(typeof(Player.FirearmController), "_isAiming").GetValue(fc);
                 FaceShieldComponent fsComponent = player.FaceShieldObserver.Component;
                 NightVisionComponent nvgComponent = player.NightVisionObserver.Component;
                 bool fsIsON = fsComponent != null && (fsComponent.Togglable == null || fsComponent.Togglable.On);
@@ -85,7 +77,7 @@ namespace CombatStances
                     {
                         Plugin.IsAllowedADS = false;
                         player.ProceduralWeaponAnimation.IsAiming = false;
-                        AccessTools.Field(typeof(EFT.Player.FirearmController), "_isAiming").SetValue(fc, false);
+                        AccessTools.Field(typeof(Player.FirearmController), "_isAiming").SetValue(fc, false);
                         hasSetCanAds = true;
                     }
                 }
@@ -101,11 +93,10 @@ namespace CombatStances
                     {
                         Plugin.IsAllowedADS = false;
                         player.ProceduralWeaponAnimation.IsAiming = false;
-                        AccessTools.Field(typeof(EFT.Player.FirearmController), "_isAiming").SetValue(fc, false);
+                        AccessTools.Field(typeof(Player.FirearmController), "_isAiming").SetValue(fc, false);
                         player.MovementContext.SetAimingSlowdown(true, 0.33f);
                         hasSetActiveAimADS = true;
                     }
-
                 }
                 if (!StanceController.IsActiveAiming && hasSetActiveAimADS)
                 {
@@ -142,7 +133,6 @@ namespace CombatStances
                 {
                     StanceController.PistolIsColliding = true;
                 }
-
             }
         }
     }
@@ -151,13 +141,13 @@ namespace CombatStances
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(EFT.Player.FirearmController).GetMethod("set_IsAiming", BindingFlags.NonPublic | BindingFlags.Instance);
+            return typeof(Player.FirearmController).GetMethod("set_IsAiming", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         [PatchPostfix]
-        private static void PatchPostfix(EFT.Player.FirearmController __instance, bool value, ref bool ____isAiming)
+        private static void PatchPostfix(Player.FirearmController __instance, bool value, ref bool ____isAiming)
         {
-            Player player = (Player)AccessTools.Field(typeof(EFT.Player.ItemHandsController), "_player").GetValue(__instance);
+            Player player = (Player)AccessTools.Field(typeof(Player.ItemHandsController), "_player").GetValue(__instance);
             if (__instance.Item.WeapClass == "pistol")
             {
                 player.Physical.Aim((!____isAiming || !(player.MovementContext.StationaryWeapon == null)) ? 0f : __instance.ErgonomicWeight * 0.2f);
@@ -169,13 +159,13 @@ namespace CombatStances
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(EFT.Player.FirearmController).GetMethod("ToggleAim", BindingFlags.Public | BindingFlags.Instance);
+            return typeof(Player.FirearmController).GetMethod("ToggleAim", BindingFlags.Public | BindingFlags.Instance);
         }
 
         [PatchPrefix]
-        private static bool Prefix(EFT.Player.FirearmController __instance)
+        private static bool Prefix(Player.FirearmController __instance)
         {
-            Player player = (Player)AccessTools.Field(typeof(EFT.Player.ItemHandsController), "_player").GetValue(__instance);
+            Player player = (Player)AccessTools.Field(typeof(Player.ItemHandsController), "_player").GetValue(__instance);
             if ((Plugin.EnableFSPatch.Value || Plugin.EnableNVGPatch.Value) && !player.IsAI)
             {
                 return Plugin.IsAllowedADS;

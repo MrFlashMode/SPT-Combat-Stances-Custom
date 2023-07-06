@@ -1,14 +1,8 @@
-﻿using Aki.Reflection.Patching;
-using BepInEx.Logging;
-using Comfort.Common;
-using EFT;
-using EFT.InventoryLogic;
-using EFT.UI;
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Reflection;
-using System.Text;
+using Aki.Reflection.Patching;
+using EFT;
+using HarmonyLib;
 using UnityEngine;
 using static EFT.Player;
 
@@ -24,8 +18,8 @@ namespace CombatStances
         [PatchPrefix]
         private static bool Prefix(ref GClass1603 __instance, bool isAiming, float slow)
         {
-
             Player player = (Player)AccessTools.Field(typeof(GClass1603), "player_0").GetValue(__instance);
+
             if (player.IsYourPlayer == true)
             {
                 if (isAiming)
@@ -33,11 +27,12 @@ namespace CombatStances
                     //slow is hard set to 0.33 when called, 0.4-0.43 feels best.
                     float baseSpeed = slow + 0.07f - Plugin.AimMoveSpeedInjuryReduction;
                     float totalSpeed = StanceController.IsActiveAiming ? baseSpeed * 1.45f : baseSpeed;
-                    __instance.AddStateSpeedLimit(Math.Max(totalSpeed, 0.15f), Player.ESpeedLimit.Aiming);
+                    __instance.AddStateSpeedLimit(Math.Max(totalSpeed, 0.15f), ESpeedLimit.Aiming);
 
                     return false;
                 }
-                __instance.RemoveStateSpeedLimit(Player.ESpeedLimit.Aiming);
+
+                __instance.RemoveStateSpeedLimit(ESpeedLimit.Aiming);
                 return false;
             }
             return true;
@@ -59,8 +54,8 @@ namespace CombatStances
             if (player.IsYourPlayer == true)
             {
                 GClass755 rotationFrameSpan = (GClass755)AccessTools.Field(typeof(GClass1603), "gclass755_0").GetValue(__instance);
-                float stanceAccelBonus = StanceController.IsShortStock ? 0.9f : StanceController.IsLowReady ? 1.3f : StanceController.IsHighReady && Plugin.EnableTacSprint.Value ? 1.7f : StanceController.IsHighReady ? 1.3f : 1f;
-                float stanceSpeedBonus = StanceController.IsHighReady && Plugin.EnableTacSprint.Value ? 1.15f : 1f;
+                float stanceAccelBonus = !Plugin.playerIsScav && Plugin.IsSprinting && Plugin.EnableTacSprint.Value && !Plugin.LeftArmBlacked && !Plugin.RightArmBlacked ? 2f : 1f;
+                float stanceSpeedBonus = !Plugin.playerIsScav && Plugin.IsSprinting && Plugin.EnableTacSprint.Value && !Plugin.LeftArmBlacked && !Plugin.RightArmBlacked ? 2f : 1f;
 
                 float sprintAccel = player.Physical.SprintAcceleration * deltaTime * stanceAccelBonus;
                 float speed = (player.Physical.SprintSpeed * __instance.SprintingSpeed + 1f) * __instance.StateSprintSpeedLimit * stanceSpeedBonus;
@@ -86,7 +81,7 @@ namespace CombatStances
         {
             if (Utils.CheckIsReady() == true && __instance.IsYourPlayer == true)
             {
-                Player.FirearmController fc = __instance.HandsController as Player.FirearmController;
+                FirearmController fc = __instance.HandsController as FirearmController;
                 PlayerInjuryStateCheck(__instance);
                 Plugin.IsSprinting = __instance.IsSprintEnabled;
                 Plugin.IsInInventory = __instance.IsInventoryOpened;
@@ -110,7 +105,6 @@ namespace CombatStances
                 __instance.Physical.HandsStamina.Current = Mathf.Max(__instance.Physical.HandsStamina.Current, 1f);
             }
         }
-
 
         public static void PlayerInjuryStateCheck(Player player)
         {

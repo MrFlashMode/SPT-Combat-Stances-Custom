@@ -10,15 +10,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Aki.Reflection" />
-	<Reference Include="ItemComponent.Types"/>
-    <Reference Include="Comfort"/>
-    <Reference Include="Assembly-CSharp" />
-    <Reference Include="AnimationSystem.Types" />
-	<Reference Include="UnityEngine" />
-    <Reference Include="UnityEngine.InputLegacyModule" />
-    <Reference Include="UnityEngine.CoreModule" />
-	<Reference Include="UnityEngine.UIModule" />
+    <Reference Include="Aki.Reflection">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\Aki.Reflection.dll</HintPath>
+    </Reference>
+	<Reference Include="ItemComponent.Types">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\ItemComponent.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="Comfort">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\Comfort.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="AnimationSystem.Types">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\AnimationSystem.Types.dll</HintPath>
+    </Reference>
+	<Reference Include="UnityEngine">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+	<Reference Include="UnityEngine.UIModule">
+      <HintPath>F:\SinglePlayerTarkov\EscapeFromTarkov_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
