@@ -1,4 +1,6 @@
-Custom version of Combat Stance Standalone
+I could not fork the project normally, I do not know for what reason (but I guess), although in general I do not give a fuck
+
+It's a Custom version of Combat Stance Standalone (https://github.com/space-commits/SPT-Combat-Stances)
 
 Changes:
 1) Added a check on Scav so that tactical sprinting and alternate pistol positions do not apply to them, only PMCs
